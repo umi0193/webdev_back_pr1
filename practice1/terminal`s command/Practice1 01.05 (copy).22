@@ -1,0 +1,175 @@
+CREATE DATABASE `practice1`;            //Задание 1 (созд.БД, созд. 2 табл. с ID  и привязкой)//
+Query OK, 1 row affected (0.08 sec)
+
+mysql> use practice1;
+Database changed
+mysql> CREATE TABLE City (
+    -> ID INT PRIMARY KEY AUTO_INCREMENT,
+    -> Name varchar(255)
+    -> );
+ERROR 1046 (3D000): No database selected
+mysql> use practice1;
+Database changed
+mysql> CREATE TABLE City (
+    -> ID INT PRIMARY KEY AUTO_INCREMENT,
+    -> Name varchar(255)
+    -> );
+Query OK, 0 rows affected (0.40 sec)
+
+mysql> describe City;
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| ID    | int          | NO   | PRI | NULL    | auto_increment |
+| Name  | varchar(255) | YES  |     | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+2 rows in set (0.01 sec)
+
+mysql> INSERT INTO City (Name) VALUES ('Simferopol'), ('Moskva'), ('London'), ('Paris'), ('Amsterdam');
+Query OK, 5 rows affected (0.08 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> describe City;
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| ID    | int          | NO   | PRI | NULL    | auto_increment |
+| Name  | varchar(255) | YES  |     | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM City;  //Задание 2 10 пользователей 5 городов рандомно//
++----+------------+
+| ID | Name       |
++----+------------+
+|  1 | Simferopol |
+|  2 | Moskva     |
+|  3 | London     |
+|  4 | Paris      |
+|  5 | Amsterdam  |
++----+------------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Users (
+    -> ID INT PRIMARY KEY AUTO_INCREMENT,
+    -> Name TEXT,
+    -> Email varchar(50),
+    -> Phone varchar(20),  //я так поняла стандартный для номера телефона//
+    -> City_id int NOT NULL,
+    -> FOREIGN KEY (City_id)  REFERENCES City (ID)
+    -> );
+Query OK, 0 rows affected (0.47 sec)
+
+mysql> describe Users;
++---------+-------------+------+-----+---------+----------------+
+| Field   | Type        | Null | Key | Default | Extra          |
++---------+-------------+------+-----+---------+----------------+
+| ID      | int         | NO   | PRI | NULL    | auto_increment |
+| Name    | text        | YES  |     | NULL    |                |
+| Email   | varchar(50) | YES  |     | NULL    |                |
+| Phone   | varchar(20) | YES  |     | NULL    |                |
+| City_id | int         | NO   | MUL | NULL    |                |
++---------+-------------+------+-----+---------+----------------+
+5 rows in set (0.01 sec)
+                               //Задание 2 10 пользователей 5 городов рандомно//
+mysql> INSERT INTO Users (Name, Email, Phone, City_id) VALUES ('Vlad', 'vlad@mail.com', '79899444597', '1'), ('Sofiia', 'sofka@gmail.com', '79189444597', '1'), ('Lizza', 'elisaveta@mail.com', '79899456597', '4'), ('Bogdan', 'bogg34@mail.com', '79083644347', '5'), ('Riza', 'ri@mail.com', '79899441111', '2'), ('Vladimir', 'vladimir666@mail.com', '79899444558', '3'), ('Elena', 'olgaelena@mail.com', '79899444444', '3'), ('Simon', 'simonov@gmail.com', '79893334597', '3'), ('Vendetta', 'vmainvendetta@mail.com', '79899666597', '5'), ('Viktor', 'vik@mail.com', '79899123457', '2');
+Query OK, 10 rows affected (0.07 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Users;
++----+----------+------------------------+-------------+---------+
+| ID | Name     | Email                  | Phone       | City_id |
++----+----------+------------------------+-------------+---------+
+|  1 | Vlad     | vlad@mail.com          | 79899444597 |       1 |
+|  2 | Sofiia   | sofka@gmail.com        | 79189444597 |       1 |
+|  3 | Lizza    | elisaveta@mail.com     | 79899456597 |       4 |
+|  4 | Bogdan   | bogg34@mail.com        | 79083644347 |       5 |
+|  5 | Riza     | ri@mail.com            | 79899441111 |       2 |
+|  6 | Vladimir | vladimir666@mail.com   | 79899444558 |       3 |
+|  7 | Elena    | olgaelena@mail.com     | 79899444444 |       3 |
+|  8 | Simon    | simonov@gmail.com      | 79893334597 |       3 |
+|  9 | Vendetta | vmainvendetta@mail.com | 79899666597 |       5 |
+| 10 | Viktor   | vik@mail.com           | 79899123457 |       2 |
++----+----------+------------------------+-------------+---------+
+10 rows in set (0.00 sec)
+
+mysql> 
+                    //Задание 3 реализовать подключение к базе данных на PHP c выводом смс о статусе//
+mysql>                                          
+ana@Ana:~$ mkdir prac1
+ana@Ana:~$ cd prac1
+ana@Ana:~/prac1$ touch practice1.php
+ana@Ana:~/prac1$ ls
+practice1.php
+ana@Ana:~/prac1$ nano practice.php
+
+<?php
+$server = "localhost";
+$user = "admin";
+$password = "password";
+ 
+// Открываем соединение
+$mysqli_connection = new mysqli($server, $user, $password);
+ 
+// Проверка результата подключения
+if ($mysqli_connection->connect_error) {
+    die("Что-то пошло не так... " . $mysqli_connection->connect_error);
+} 
+echo "Соединение с БД установлено!:)";
+ 
+// Закрываем соединение
+$mysqli_connection->close();
+?>
+
+ana@Ana:~/prac1$ php -S localhost:8484 -t ~/prac1
+[Mon May  2 14:32:16 2022] PHP 8.1.5 Development Server (http://localhost:8484) started
+[Mon May  2 14:32:22 2022] 127.0.0.1:40466 Accepted
+[Mon May  2 14:32:22 2022] 127.0.0.1:40466 [404]: GET / - No such file or directory
+[Mon May  2 14:32:22 2022] 127.0.0.1:40466 Closing
+[Mon May  2 14:32:51 2022] 127.0.0.1:40468 Accepted
+[Mon May  2 14:32:51 2022] 127.0.0.1:40468 [404]: GET /practice%201.php - No such file or directory
+[Mon May  2 14:32:51 2022] 127.0.0.1:40468 Closing
+[Mon May  2 14:33:00 2022] 127.0.0.1:40470 Accepted
+[Mon May  2 14:33:00 2022] 127.0.0.1:40470 [200]: GET /practice1.php
+[Mon May  2 14:33:00 2022] 127.0.0.1:40470 Closing
+                             //Задание 5 установить:composer, vlucas/phpdotenv, созд. .env с данными для входа и реализовать вход подтянув данные через этот .env //
+                             
+ana@Ana:~/prac1$ touch connecter.env
+ana@Ana:~/prac1$ nano connecter.env
+
+DB_HOST     = "localhost"
+DB_NAME     = "practice1"
+DB_USER     = "admin"
+DB_PASSWORD = "password"
+
+ana@Ana:~$ sudo apt-get install conposer
+[sudo] password for ana: 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+E: Unable to locate package conposer
+ana@Ana:~$ sudo apt-get install composer
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+composer is already the newest version (1.10.1-1).
+The following packages were automatically installed and are no longer required:
+  libfwupdplugin1 libnvidia-cfg1-470 libnvidia-common-470
+  libnvidia-compute-470 libnvidia-decode-470 libnvidia-encode-470
+  libnvidia-extra-470 libnvidia-fbc1-470 libnvidia-gl-470 libnvidia-ifr1-470
+  libvdpau1 libxnvctrl0 mesa-vdpau-drivers nvidia-compute-utils-470
+  nvidia-kernel-source-470 nvidia-settings nvidia-utils-470
+  screen-resolution-extra vdpau-driver-all xserver-xorg-video-nvidia-470
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 24 not upgraded.
+ana@Ana:~$ sudo apt-get install vlucas/phpdotenv
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+E: Unable to locate package vlucas
+ana@Ana:~$ 
+
+
+
+
+                                                      
